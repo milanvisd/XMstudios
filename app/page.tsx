@@ -9,9 +9,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-              Creating
-              <span className="text-accent"> amazing </span>
-              gaming experiences
+              Creating amazing gaming experiences
             </h1>
             <p className="text-lg md:text-xl text-muted mb-8 max-w-2xl">
               We build games that inspire, challenge, and entertain. Explore our
