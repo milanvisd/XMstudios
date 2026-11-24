@@ -27,15 +27,15 @@
 }
 
 .dark {
-  --background: #0a0e1a;
-  --foreground: #e2e8f0;
+  --background: #000000;
+  --foreground: #f4f4f5;
   --accent: #60a5fa;
   --accent-hover: #93bbfd;
-  --card: #111827;
-  --card-hover: #1a2332;
-  --border-color: #1e293b;
-  --muted: #94a3b8;
-  --surface: #111827;
+  --card: #0a0a0a;
+  --card-hover: #161616;
+  --border-color: #27272a;
+  --muted: #a1a1aa;
+  --surface: #121212;
 }
 
 body {

@@ -2,17 +2,12 @@ import Link from "next/link";
 import { FiArrowRight, FiFileText } from "react-icons/fi";
 
 export default function Home() {
-
   return (
     <div>
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-accent/5" />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-sm font-medium mb-6">
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              Welcome to SM Studios
-            </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
               Creating
               <span className="text-accent"> amazing </span>
