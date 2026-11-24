@@ -1,0 +1,53 @@
+{
+  "name": "sm-studios",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "@tiptap/extension-code-block-lowlight": "^3.30.2",
+    "@tiptap/extension-color": "^3.30.2",
+    "@tiptap/extension-heading": "^3.30.2",
+    "@tiptap/extension-highlight": "^3.30.2",
+    "@tiptap/extension-image": "^3.30.2",
+    "@tiptap/extension-link": "^3.30.2",
+    "@tiptap/extension-placeholder": "^3.30.2",
+    "@tiptap/extension-text-align": "^3.30.2",
+    "@tiptap/extension-text-style": "^3.30.2",
+    "@tiptap/extension-underline": "^3.30.2",
+    "@tiptap/pm": "^3.30.2",
+    "@tiptap/react": "^3.30.2",
+    "@tiptap/starter-kit": "^3.30.2",
+    "lowlight": "^3.3.0",
+    "marked": "^18.0.10",
+    "next": "^16.4.6",
+    "next-themes": "^0.4.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-icons": "^5.7.0",
+    "sanitize-html": "^2.18.2",
+    "turndown": "^7.2.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/sanitize-html": "^2.16.2",
+    "@types/turndown": "^5.0.6",
+    "eslint": "^9",
+    "eslint-config-next": "^16.4.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

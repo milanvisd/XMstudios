@@ -1,0 +1,171 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-border: var(--border-color);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: #f0f7ff;
+  --foreground: #0a0e1a;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --card: #ffffff;
+  --card-hover: #f0f7ff;
+  --border-color: #d0e3ff;
+  --muted: #6b7280;
+  --surface: #e0efff;
+}
+
+.dark {
+  --background: #0a0e1a;
+  --foreground: #e2e8f0;
+  --accent: #60a5fa;
+  --accent-hover: #93bbfd;
+  --card: #111827;
+  --card-hover: #1a2332;
+  --border-color: #1e293b;
+  --muted: #94a3b8;
+  --surface: #111827;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.tiptap-editor .ProseMirror {
+  min-height: 300px;
+  padding: 1rem;
+  outline: none;
+}
+
+.tiptap-editor .ProseMirror h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap-editor .ProseMirror h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap-editor .ProseMirror h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap-editor .ProseMirror p {
+  margin-bottom: 0.75rem;
+}
+
+.tiptap-editor .ProseMirror ul,
+.tiptap-editor .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap-editor .ProseMirror ul {
+  list-style-type: disc;
+}
+
+.tiptap-editor .ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.tiptap-editor .ProseMirror blockquote {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.tiptap-editor .ProseMirror a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.tiptap-editor .ProseMirror img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.tiptap-editor .ProseMirror pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+}
+
+.tiptap-editor .ProseMirror code {
+  background: var(--surface);
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+
+.tiptap-editor .ProseMirror pre code {
+  background: none;
+  padding: 0;
+}
+
+.tiptap-editor .ProseMirror mark {
+  background-color: #fbbf24;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.15rem;
+}
+
+.tiptap-editor .ProseMirror hr {
+  border-color: var(--border-color);
+  margin: 1.5rem 0;
+}
+
+.news-content h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+.news-content h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+.news-content h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+.news-content p { margin-bottom: 0.75rem; line-height: 1.7; }
+.news-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+.news-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
+.news-content blockquote { border-left: 3px solid var(--accent); padding-left: 1rem; color: var(--muted); font-style: italic; margin-bottom: 0.75rem; }
+.news-content a { color: var(--accent); text-decoration: underline; }
+.news-content img { max-width: 100%; border-radius: 0.5rem; margin: 0.75rem 0; }
+.news-content pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 0.75rem; }
+.news-content code { background: var(--surface); padding: 0.15rem 0.3rem; border-radius: 0.25rem; font-size: 0.9em; }
+.news-content pre code { background: none; padding: 0; }
+.news-content mark { background-color: #fbbf24; padding: 0.1rem 0.2rem; border-radius: 0.15rem; }
+.news-content hr { border-color: var(--border-color); margin: 1.5rem 0; }
