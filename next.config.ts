@@ -10,7 +10,7 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "media-src 'self' https:",
   "font-src 'self' data:",
-  "connect-src 'self' https: wss:",
+  "connect-src 'self' https: wss:" + (isDev ? " ws: http:" : ""),
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",
