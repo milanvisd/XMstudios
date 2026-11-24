@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { FiArrowRight, FiFileText } from "react-icons/fi";
-import { getLatestGames, getLatestNews } from "@/lib/queries";
-import GameCard from "@/components/GameCard";
+import { getLatestNews } from "@/lib/queries";
 import NewsCard from "@/components/NewsCard";
 
 export const revalidate = 60;
 
 export default async function Home() {
-  const [games, news] = await Promise.all([getLatestGames(3), getLatestNews(3)]);
+  const news = await getLatestNews(3);
 
   return (
     <div>
@@ -47,29 +46,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {games.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-          <div className="flex items-end justify-between gap-4 mb-8">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold mb-2">Our Games</h2>
-              <p className="text-muted">Handcrafted experiences, ready to play.</p>
-            </div>
-            <Link
-              href="/games"
-              className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover transition-colors"
-            >
-              View all
-              <FiArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {games.map((game) => (
-              <GameCard key={game.id} game={game} />
-            ))}
-          </div>
-        </section>
-      )}
 
       {news.length > 0 && (
         <section className="border-t border-border bg-card/30">
