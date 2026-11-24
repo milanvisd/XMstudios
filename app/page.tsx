@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { FiArrowRight, FiFileText } from "react-icons/fi";
-import { getLatestNews } from "@/lib/queries";
-import NewsCard from "@/components/NewsCard";
 
-export const revalidate = 60;
-
-export default async function Home() {
-  const news = await getLatestNews(3);
+export default function Home() {
 
   return (
     <div>
@@ -46,31 +41,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {news.length > 0 && (
-        <section className="border-t border-border bg-card/30">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-            <div className="flex items-end justify-between gap-4 mb-8">
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">Latest News</h2>
-                <p className="text-muted">Development updates, patch notes and announcements.</p>
-              </div>
-              <Link
-                href="/news"
-                className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover transition-colors"
-              >
-                View all
-                <FiArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {news.map((article) => (
-                <NewsCard key={article.id} article={article} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       <section className="border-t border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
