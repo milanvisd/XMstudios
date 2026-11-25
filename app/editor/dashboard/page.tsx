@@ -53,6 +53,19 @@ function useToast() {
   return { toast, showToast };
 }
 
+/**
+ * RLS doesn't error on UPDATE/DELETE it's not allowed to touch — PostgREST just
+ * reports success with zero affected rows. Ask for the touched rows back so a
+ * blocked save shows an error instead of a fake "updated" toast.
+ */
+function assertRowsWritten(rows: { id: string }[] | null, action: string) {
+  if (!rows || rows.length === 0) {
+    throw new Error(
+      `${action} was blocked by row-level security. Your account is not on the admins list (run the insert in harden-rls.sql for your email).`
+    );
+  }
+}
+
 function ToastMessage({ toast }: { toast: Toast | null }) {
   if (!toast) return null;
 
@@ -93,12 +106,30 @@ export default function EditorDashboard() {
   const { user, loading: authLoading, signOut } = useAuth();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("articles");
+  const [notAdmin, setNotAdmin] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) {
       router.push("/editor");
     }
   }, [user, authLoading, router]);
+
+  // harden-rls.sql restricts writes to public.admins. Without this check a
+  // non-admin can open the dashboard and get silent no-op saves.
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+
+    getSupabaseBrowser()
+      .rpc("is_admin")
+      .then(({ data, error }) => {
+        if (active && !error && data === false) setNotAdmin(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [user]);
 
   if (authLoading || !user) {
     return (
@@ -129,6 +160,22 @@ export default function EditorDashboard() {
           </button>
         </div>
       </div>
+
+      {notAdmin && (
+        <div className="flex gap-3 p-4 mb-8 rounded-xl border border-yellow-500/30 bg-yellow-500/10 text-sm">
+          <FiAlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-medium">This account can sign in but can&apos;t save.</p>
+            <p className="text-muted">
+              It isn&apos;t listed in <code className="font-mono">public.admins</code>, so Supabase
+              rejects every write. Add it in the SQL editor:
+            </p>
+            <code className="block mt-1 p-2 rounded-lg bg-surface font-mono text-xs overflow-x-auto">
+              {`insert into public.admins (user_id)\nselect id from auth.users where email = '${user.email ?? "you@example.com"}';`}
+            </code>
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-1 p-1 bg-surface rounded-xl mb-8 w-fit">
         <button
@@ -220,7 +267,7 @@ function ArticlesTab() {
           : article.published_at || null;
 
       if (article.id) {
-        const { error } = await getSupabaseBrowser()
+        const { data, error } = await getSupabaseBrowser()
           .from("news_articles")
           .update({
             title: article.title,
@@ -233,32 +280,38 @@ function ArticlesTab() {
             status: article.status,
             published_at: publishedAt,
           })
-          .eq("id", article.id);
+          .eq("id", article.id)
+          .select("id");
         if (error) throw error;
+        assertRowsWritten(data, "Saving the article");
         showToast("Article updated!");
       } else {
         const {
           data: { user },
         } = await getSupabaseBrowser().auth.getUser();
 
-        const { error } = await getSupabaseBrowser().from("news_articles").insert({
-          title: article.title,
-          slug: article.slug,
-          excerpt: article.excerpt,
-          content: article.content,
-          content_format: article.content_format,
-          featured_image: article.featured_image,
-          game_id: article.game_id || null,
-          status: article.status,
-          author_id: user?.id,
-          published_at: publishedAt,
-        });
+        const { data, error } = await getSupabaseBrowser()
+          .from("news_articles")
+          .insert({
+            title: article.title,
+            slug: article.slug,
+            excerpt: article.excerpt,
+            content: article.content,
+            content_format: article.content_format,
+            featured_image: article.featured_image,
+            game_id: article.game_id || null,
+            status: article.status,
+            author_id: user?.id,
+            published_at: publishedAt,
+          })
+          .select("id");
         if (error) throw error;
+        assertRowsWritten(data, "Creating the article");
         showToast("Article created!");
       }
       setEditing(null);
       setCreating(false);
-      loadArticles();
+      await loadArticles();
       await revalidateSite();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
@@ -270,18 +323,23 @@ function ArticlesTab() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this article?")) return;
 
-    const { error } = await getSupabaseBrowser()
+    const { data, error } = await getSupabaseBrowser()
       .from("news_articles")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .select("id");
 
     if (error) {
       showToast("Could not delete article: " + error.message, "error");
       return;
     }
+    if (!data?.length) {
+      showToast("Delete was blocked by row-level security — this account is not on the admins list.", "error");
+      return;
+    }
 
     showToast("Article deleted");
-    loadArticles();
+    await loadArticles();
     await revalidateSite();
   };
 
@@ -679,7 +737,7 @@ function GamesTab() {
     setSaving(true);
     try {
       if (game.id) {
-        const { error } = await getSupabaseBrowser()
+        const { data, error } = await getSupabaseBrowser()
           .from("games")
           .update({
             title: game.title,
@@ -690,25 +748,31 @@ function GamesTab() {
             screenshots: game.screenshots,
             download_link: game.download_link,
           })
-          .eq("id", game.id);
+          .eq("id", game.id)
+          .select("id");
         if (error) throw error;
+        assertRowsWritten(data, "Saving the game");
         showToast("Game updated!");
       } else {
-        const { error } = await getSupabaseBrowser().from("games").insert({
-          title: game.title,
-          slug: game.slug,
-          description: game.description,
-          short_description: game.short_description,
-          cover_image: game.cover_image,
-          screenshots: game.screenshots || [],
-          download_link: game.download_link,
-        });
+        const { data, error } = await getSupabaseBrowser()
+          .from("games")
+          .insert({
+            title: game.title,
+            slug: game.slug,
+            description: game.description,
+            short_description: game.short_description,
+            cover_image: game.cover_image,
+            screenshots: game.screenshots || [],
+            download_link: game.download_link,
+          })
+          .select("id");
         if (error) throw error;
+        assertRowsWritten(data, "Creating the game");
         showToast("Game created!");
       }
       setEditing(null);
       setCreating(false);
-      loadGames();
+      await loadGames();
       await revalidateSite();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
@@ -726,15 +790,23 @@ function GamesTab() {
       return;
     }
 
-    const { error } = await getSupabaseBrowser().from("games").delete().eq("id", id);
+    const { data, error } = await getSupabaseBrowser()
+      .from("games")
+      .delete()
+      .eq("id", id)
+      .select("id");
 
     if (error) {
       showToast("Could not delete game: " + error.message, "error");
       return;
     }
+    if (!data?.length) {
+      showToast("Delete was blocked by row-level security — this account is not on the admins list.", "error");
+      return;
+    }
 
     showToast("Game deleted");
-    loadGames();
+    await loadGames();
     await revalidateSite();
   };
 
