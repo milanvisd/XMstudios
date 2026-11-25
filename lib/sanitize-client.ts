@@ -66,7 +66,11 @@ export function sanitizeClientHtml(html: string): string {
 
   const doc = new DOMParser().parseFromString(html, "text/html");
 
-  doc.querySelectorAll("*").forEach((element) => {
+  // Walk only inside <body>. The parsed document also contains <html>, <head>
+  // and <body>, and those aren't in ALLOWED_TAGS — unwrapping <html> with
+  // replaceWith() throws "Only one element on document allowed"
+  // (HierarchyRequestError) and breaks the preview.
+  doc.body.querySelectorAll("*").forEach((element) => {
     if (DROP_WITH_CONTENT.has(element.tagName)) {
       element.remove();
       return;
