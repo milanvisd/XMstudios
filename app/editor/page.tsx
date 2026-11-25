@@ -18,12 +18,17 @@ export default function EditorLoginPage() {
     setError("");
     setSubmitting(true);
 
-    const result = await signIn(email, password);
-    if (result.error) {
-      setError(result.error);
-      setSubmitting(false);
-    } else {
+    try {
+      const result = await signIn(email, password);
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
       router.push("/editor/dashboard");
+    } catch {
+      setError("Could not reach the auth server. Check your connection and try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
